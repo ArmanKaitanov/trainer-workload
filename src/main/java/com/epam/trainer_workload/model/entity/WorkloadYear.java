@@ -37,10 +37,10 @@ public class WorkloadYear {
 
     @ManyToOne
     @JoinColumn(name = "trainer_workload_id")
-//    @ToString.Exclude
+    @ToString.Exclude
     private TrainerWorkload trainerWorkload;
 
     @OneToMany(mappedBy = "workloadYear", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @ToString.Exclude
+    @ToString.Exclude
     private List<WorkloadMonth> workloadMonths;
 }

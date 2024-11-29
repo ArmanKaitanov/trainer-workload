@@ -56,6 +56,6 @@ public class TrainerWorkload {
 //    private Integer trainingDuration;
 
     @OneToMany(mappedBy = "trainerWorkload", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @ToString.Exclude
+    @ToString.Exclude
     private List<WorkloadYear> workloadYears;
 }

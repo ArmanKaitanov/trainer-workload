@@ -1,14 +1,17 @@
 package com.epam.trainer_workload.service;
 
+import com.epam.trainer_workload.dto.request.TrainerWorkloadGetRequestDto;
 import com.epam.trainer_workload.dto.request.TrainerWorkloadUpdateRequestDto;
 import com.epam.trainer_workload.model.entity.TrainerWorkload;
 import com.epam.trainer_workload.model.entity.WorkloadMonth;
 import com.epam.trainer_workload.model.entity.WorkloadYear;
 import com.epam.trainer_workload.model.enumeration.ActionType;
 import com.epam.trainer_workload.repository.TrainerWorkloadRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,6 +73,28 @@ public class TrainerWorkloadServiceImpl implements TrainerWorkloadService {
         }
 
         logger.info("Trainer's {} workload has been successfully updated", dto.getTrainerUsername());
+    }
+
+    @Override
+    public int getWorkload(String trainerUsername, int year, int month) {
+        logger.info("Trying to get workload for trainer with username {}", trainerUsername);
+
+        TrainerWorkload trainerWorkload = trainerWorkloadRepository.findByTrainerUsername(trainerUsername)
+                .orElseThrow(() -> {
+                    logger.info("Trainer with username {} not found", trainerUsername);
+                    return new EntityNotFoundException(String.format("Trainer with username %s not found", trainerUsername));
+                });
+
+        int duration = trainerWorkload.getWorkloadYears().stream()
+                .filter(workloadYear -> workloadYear.getYear() == year)
+                .flatMap(workloadYear -> workloadYear.getWorkloadMonths().stream())
+                .filter(workloadMonth -> workloadMonth.getMonth() == month)
+                .map(WorkloadMonth::getTrainingDuration)
+                .findAny().orElse(0);
+
+        logger.info("Workload for trainer with username {} has been successfully gotten", trainerUsername);
+
+        return duration;
     }
 
     private void addOrUpdateWorkloadHours(TrainerWorkload trainerWorkload, Year year, int month, int duration) {
