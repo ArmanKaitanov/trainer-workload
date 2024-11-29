@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  application:
+    name: trainer-workload-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+server:
+  port: 8081
+
+token:
+  secret:
+    key: h9YLYPg+1mui21suIcsRIfKY+9yTZrqVJIsMNMMS79Gahyud+thoXdZ4k0W7oT4tHHqE5v2NE4PppfxUeLKdgg==
