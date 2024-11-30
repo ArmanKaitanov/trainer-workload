@@ -4,13 +4,16 @@ import com.epam.trainer_workload.deserializer.CustomActionTypeDeserializer;
 import com.epam.trainer_workload.deserializer.CustomBooleanDeserializer;
 import com.epam.trainer_workload.model.enumeration.ActionType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class TrainerWorkloadUpdateRequestDto {
 
     @NotBlank(message = "Trainer username is required")
@@ -31,6 +34,7 @@ public class TrainerWorkloadUpdateRequestDto {
     private LocalDate trainingDate;
 
     @NotNull(message = "Training duration is required")
+    @Min(value = 0, message = "Training duration should be positive integer number in minutes")
     private Integer trainingDuration;
 
     @NotNull(message = "Action type is required")

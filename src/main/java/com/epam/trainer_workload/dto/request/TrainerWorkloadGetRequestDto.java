@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Data
 @Builder

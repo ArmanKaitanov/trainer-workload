@@ -34,7 +34,10 @@ public class TrainerWorkloadController {
     public ResponseEntity<TrainerWorkloadResponseDto> getTrainerWorkload(
             @RequestParam(value = "trainerUsername") String trainerUsername,
             @RequestParam(value = "year") int year,
-            @RequestParam(value = "month") @Min(1) @Max(12) int month
+            @RequestParam(value = "month")
+            @Min(value = 1, message = "Month value should be int number from 1 to 12")
+            @Max(value = 12, message = "Month value should be int number from 1 to 12")
+            int month
             ) {
         int duration = trainerWorkloadService.getWorkload(trainerUsername, year, month);
 

@@ -47,14 +47,6 @@ public class TrainerWorkload {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
-//    @NonNull
-//    @Column(name = "training_date", nullable = false)
-//    private LocalDate trainingDate;
-//
-//    @NonNull
-//    @Column(name = "training_duration", nullable = false)
-//    private Integer trainingDuration;
-
     @OneToMany(mappedBy = "trainerWorkload", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<WorkloadYear> workloadYears;

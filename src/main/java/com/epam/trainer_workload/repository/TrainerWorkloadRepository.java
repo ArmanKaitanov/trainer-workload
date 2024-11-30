@@ -11,8 +11,4 @@ import java.util.Optional;
 public interface TrainerWorkloadRepository extends JpaRepository<TrainerWorkload, Long> {
 
     Optional<TrainerWorkload> findByTrainerUsername(String trainerUsername);
-
-//    @Query("SELECT w.workloadYears FROM TrainerWorkload w WHERE w.trainerUsername = :trainerUsername")
-//    List<WorkloadYear> findWorkloadYearsByTrainerUsername(String trainerUsername);
-
 }

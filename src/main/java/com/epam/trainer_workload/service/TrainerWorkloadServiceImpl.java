@@ -1,6 +1,5 @@
 package com.epam.trainer_workload.service;
 
-import com.epam.trainer_workload.dto.request.TrainerWorkloadGetRequestDto;
 import com.epam.trainer_workload.dto.request.TrainerWorkloadUpdateRequestDto;
 import com.epam.trainer_workload.model.entity.TrainerWorkload;
 import com.epam.trainer_workload.model.entity.WorkloadMonth;
@@ -11,7 +10,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,25 +39,6 @@ public class TrainerWorkloadServiceImpl implements TrainerWorkloadService {
                         .workloadYears(new ArrayList<>())
                         .build()
                 );
-
-
-//        List<WorkloadYear> workloadByAllYears = trainerWorkloadRepository.findWorkloadYearsByTrainerUsername(dto.getTrainerUsername());
-//        if(workloadByAllYears == null || workloadByAllYears.isEmpty()) {
-//            workloadByAllYears = new ArrayList<>();
-//        }
-//
-//        TrainerWorkload workload = TrainerWorkload.builder()
-//                .trainerUsername(dto.getTrainerUsername())
-//                .trainerFirstname(dto.getTrainerFirstName())
-//                        .trainerLastname(dto.getTrainerLastName())
-//                        .isActive(dto.getIsActive())
-//                        .trainingDate(dto.getTrainingDate())
-//                        .trainingDuration(dto.getTrainingDuration())
-//                        .workloadYears(workloadByAllYears)
-//                        .build();
-
-
-//        trainerWorkloadRepository.save(trainerWorkload);
 
         Year year = Year.of(dto.getTrainingDate().getYear());
         int month = dto.getTrainingDate().getMonthValue();
@@ -111,7 +90,6 @@ public class TrainerWorkloadServiceImpl implements TrainerWorkloadService {
                                     .year(year.getValue())
                                     .workloadMonths(new ArrayList<>())
                                     .trainerWorkload(trainerWorkload)
-//                                    .trainingDuration(0)
                                     .build();
                             workloadByAllYears.add(newYear);
                             logger.info("Added new workload year: {}, trainer: {}", year, trainerWorkload.getTrainerUsername());
@@ -162,9 +140,22 @@ public class TrainerWorkloadServiceImpl implements TrainerWorkloadService {
                     .orElse(null);
 
             if (workloadMonth != null) {
-                workloadMonth.setTrainingDuration(workloadMonth.getTrainingDuration() - duration);
+                int newDuration = workloadMonth.getTrainingDuration() - duration;
+                workloadMonth.setTrainingDuration(newDuration);
                 logger.info("Removed training hours: {}, month: {}, year: {}, trainer: {}, new duration: {}",
-                        duration, month, year, trainerWorkload.getTrainerUsername(), workloadMonth.getTrainingDuration());
+                        duration, month, year, trainerWorkload.getTrainerUsername(), newDuration);
+
+                if(newDuration == 0) {
+                    workloadYear.getWorkloadMonths().remove(workloadMonth);
+                    logger.info("Removed workload month: {}, year: {}, trainer: {}, because training duration in this month is 0",
+                            month, year, trainerWorkload.getTrainerUsername());
+
+                    if(workloadYear.getWorkloadMonths().isEmpty()) {
+                        workloadByAllYears.remove(workloadYear);
+                        logger.info("Removed workload year: {}, trainer: {}, because training duration in this year is 0",
+                                year, trainerWorkload.getTrainerUsername());
+                    }
+                }
             }
         }
     }
