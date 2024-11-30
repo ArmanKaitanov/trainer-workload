@@ -1,7 +1,6 @@
 package com.epam.trainer_workload.model.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.ToString;
 
 @Entity
@@ -28,7 +26,6 @@ public class WorkloadMonth {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
     @Column(name = "month_value", nullable = false)
     private int month;
 
@@ -37,7 +34,6 @@ public class WorkloadMonth {
     @ToString.Exclude
     private WorkloadYear workloadYear;
 
-    @NonNull
     @Column(name = "training_duration", nullable = false)
     private int trainingDuration;
 
