@@ -1,7 +1,5 @@
 package com.epam.trainer_workload.filter;
 
-import com.epam.trainer_workload.exception.AuthenticationException;
-import com.epam.trainer_workload.exception.ParseTokenException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,34 +31,11 @@ public class RestDetailsFilter implements Filter {
 
         logger.info("{} - Request: {} {}?{}", transactionId, method, uri, queryString);
 
-        try {
-            chain.doFilter(request, response);
-        } catch (Exception e) {
-            int statusCode = determineStatusCode(e);
-            logger.error("{} - Error: {}", transactionId, e.getMessage());
-            sendErrorMessage(httpResponse, e.getMessage(), statusCode);
-
-            return;
-        }
+        chain.doFilter(request, response);
 
         int status = httpResponse.getStatus();
         String contentType = httpResponse.getContentType();
         logger.info("{} - Response: {} {}", transactionId, status, contentType);
-    }
-
-    private int determineStatusCode(Exception e) {
-        if (e instanceof AuthenticationException || e instanceof ParseTokenException) {
-            return HttpServletResponse.SC_UNAUTHORIZED;
-        } else {
-            return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-        }
-    }
-
-    private void sendErrorMessage(HttpServletResponse response, String errorMessage, int statusCode) throws IOException {
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(statusCode);
-        response.getWriter().write("{\"error\":\"" + errorMessage + "\"}");
     }
 }
 
