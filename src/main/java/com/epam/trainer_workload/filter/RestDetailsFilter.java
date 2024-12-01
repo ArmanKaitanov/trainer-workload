@@ -38,5 +38,3 @@ public class RestDetailsFilter implements Filter {
         logger.info("{} - Response: {} {}", transactionId, status, contentType);
     }
 }
-
-
