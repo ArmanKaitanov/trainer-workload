@@ -17,13 +17,17 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
   application:
     name: trainer-workload-service
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    prefer-ip-address: true
 
 server:
   port: 8081
