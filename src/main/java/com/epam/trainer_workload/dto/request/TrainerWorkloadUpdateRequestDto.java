@@ -3,12 +3,15 @@ package com.epam.trainer_workload.dto.request;
 import com.epam.trainer_workload.deserializer.CustomActionTypeDeserializer;
 import com.epam.trainer_workload.deserializer.CustomBooleanDeserializer;
 import com.epam.trainer_workload.model.enumeration.ActionType;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,10 +19,12 @@ import java.time.LocalDate;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TrainerWorkloadUpdateRequestDto implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 123456789L;
+    private static final long serialVersionUID = 1L;
 
     @NotBlank(message = "Trainer username is required")
     private String trainerUsername;
