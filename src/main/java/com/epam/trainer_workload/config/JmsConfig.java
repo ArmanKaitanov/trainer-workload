@@ -21,26 +21,12 @@ import java.util.Arrays;
 @EnableJms
 public class JmsConfig {
 
-    @Value("${spring.activemq.broker-url}")
-    private String brokerUrl;
-
-    @Value("${spring.activemq.user}")
-    private String username;
-
-    @Value("${spring.activemq.password}")
-    private String password;
-
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
-        connectionFactory.setBrokerURL(brokerUrl);
-        connectionFactory.setUserName(username);
-        connectionFactory.setPassword(password);
         connectionFactory.setTrustedPackages(Arrays.asList(
                 "com.epam.trainer_workload.dto.request",
-//                "java.util", "java.lang",
                 "com.epam.trainer_workload.model.enumeration"
-//                "java.time"
         ));
 
         RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
@@ -59,6 +45,7 @@ public class JmsConfig {
     public JmsTemplate jmsTemplate() {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory());
         jmsTemplate.setMessageConverter(jacksonJmsMessageConverter());
+
         return jmsTemplate;
     }
 
