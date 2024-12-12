@@ -3,7 +3,6 @@ package com.epam.trainer_workload.dto.request;
 import com.epam.trainer_workload.deserializer.CustomActionTypeDeserializer;
 import com.epam.trainer_workload.deserializer.CustomBooleanDeserializer;
 import com.epam.trainer_workload.model.enumeration.ActionType;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

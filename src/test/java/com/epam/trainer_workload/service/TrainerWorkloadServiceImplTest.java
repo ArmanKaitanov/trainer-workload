@@ -19,8 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
@@ -83,8 +82,8 @@ public class TrainerWorkloadServiceImplTest {
         // then
         verify(trainerWorkloadRepository, times(1)).findByTrainerUsername(requestDto.getTrainerUsername());
         verify(trainerWorkloadRepository, times(1)).save(trainerWorkload);
-        assertEquals(requestDto.getTrainingDuration(), workloadMonth.getTrainingDuration());
-        assertEquals(requestDto.getTrainingDate().getMonthValue(), workloadMonth.getMonth());
+        assertThat(workloadMonth.getTrainingDuration()).isEqualTo(requestDto.getTrainingDuration());
+        assertThat(workloadMonth.getMonth()).isEqualTo(requestDto.getTrainingDate().getMonthValue());
     }
 
     @Test
@@ -111,8 +110,8 @@ public class TrainerWorkloadServiceImplTest {
 
         verify(trainerWorkloadRepository, times(1)).findByTrainerUsername(requestDto.getTrainerUsername());
         verify(trainerWorkloadRepository, times(1)).save(trainerWorkload);
-        assertNotEquals(expectedWorkloadDuration, 0);
-        assertEquals(requestDto.getTrainingDuration(), expectedWorkloadDuration);
+        assertThat(expectedWorkloadDuration).isNotEqualTo(0);
+        assertThat(expectedWorkloadDuration).isEqualTo(requestDto.getTrainingDuration());
     }
 
     @Test
@@ -131,8 +130,8 @@ public class TrainerWorkloadServiceImplTest {
 
         // then
         verify(trainerWorkloadRepository, times(1)).findByTrainerUsername(requestDto.getTrainerUsername());
-        assertEquals(120, workloadMonth.getTrainingDuration());
-        assertEquals(requestDto.getTrainingDate().getMonthValue(), workloadMonth.getMonth());
+        assertThat(workloadMonth.getTrainingDuration()).isEqualTo(120);
+        assertThat(workloadMonth.getMonth()).isEqualTo(requestDto.getTrainingDate().getMonthValue());
     }
 
     @Test
@@ -169,7 +168,7 @@ public class TrainerWorkloadServiceImplTest {
         int workloadDuration = trainerWorkloadService.getWorkload(username, year, month);
 
         // then
-        assertEquals(expectedDuration, workloadDuration);
+        assertThat(workloadDuration).isEqualTo(expectedDuration);
         verify(trainerWorkloadRepository, times(1)).findByTrainerUsername(username);
     }
 
