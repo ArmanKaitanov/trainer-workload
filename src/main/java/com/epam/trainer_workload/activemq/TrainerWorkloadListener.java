@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -32,8 +31,6 @@ public class TrainerWorkloadListener {
 
     private final TrainerWorkloadService trainerWorkloadService;
 
-//    private final JmsTemplate jmsTemplate;
-
     private final JwtUtil jwtUtil;
 
     private final ObjectMapper objectMapper;
@@ -48,14 +45,6 @@ public class TrainerWorkloadListener {
 
     @JmsListener(destination = "trainer-workload.queue")
     public void receiveMessage(Message message) throws JMSException {
-//        try {
-//            if(true) {
-//                throw new AuthenticationException("Authentication exception");
-//            }
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//            throw e;
-//        }
         try {
             tokenAuthentication(message);
             logger.info("Transaction ID: {}", message.getStringProperty(TRANSACTION_ID_KEY));
@@ -64,15 +53,12 @@ public class TrainerWorkloadListener {
                 String json = textMessage.getText();
                 TrainerWorkloadUpdateRequestDto dto = objectMapper.readValue(json, TrainerWorkloadUpdateRequestDto.class);
                 trainerWorkloadService.updateWorkload(dto);
+                message.acknowledge();
             } else {
                 String errorMessage = "Message is not of expected type TextMessage";
                 logger.error(errorMessage);
                 throw new JMSException(errorMessage);
             }
-
-//            TrainerWorkloadUpdateRequestDto dto = (TrainerWorkloadUpdateRequestDto) objectMessage.getObject();
-//            trainerWorkloadService.updateWorkload(dto);
-//            message.acknowledge();
         } catch (AuthenticationException | ParseTokenException e) {
             logger.error("Authentication error: {}", e.getMessage());
             throw e;
