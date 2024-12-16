@@ -7,14 +7,23 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @Builder
-public class TrainerWorkloadUpdateRequestDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class TrainerWorkloadUpdateRequestDto implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @NotBlank(message = "Trainer username is required")
     private String trainerUsername;
