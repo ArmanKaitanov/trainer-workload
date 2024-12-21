@@ -1,9 +1,9 @@
 package com.epam.trainer_workload.service;
 
 import com.epam.trainer_workload.dto.request.TrainerWorkloadUpdateRequestDto;
+import com.epam.trainer_workload.model.entity.Month;
 import com.epam.trainer_workload.model.entity.TrainerWorkload;
-import com.epam.trainer_workload.model.entity.WorkloadMonth;
-import com.epam.trainer_workload.model.entity.WorkloadYear;
+import com.epam.trainer_workload.model.entity.Year;
 import com.epam.trainer_workload.model.enumeration.ActionType;
 import com.epam.trainer_workload.repository.TrainerWorkloadRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -39,30 +39,24 @@ public class TrainerWorkloadServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        WorkloadMonth workloadMonth = WorkloadMonth.builder()
-                .id(1L)
+        Month workloadMonth = Month.builder()
                 .month(11)
-                .year(2024)
-                .trainerUsername("username")
                 .trainingDuration(60)
                 .build();
 
-        WorkloadYear workloadYear = WorkloadYear.builder()
-                .id(1L)
+        Year workloadYear = Year.builder()
                 .year(2024)
-                .workloadMonths(new ArrayList<>(List.of(workloadMonth)))
+                .months(new ArrayList<>(List.of(workloadMonth)))
                 .build();
 
         trainerWorkload = TrainerWorkload.builder()
-                .id(1L)
+                .id("1L")
                 .trainerUsername("username")
                 .trainerFirstname("John")
                 .trainerLastname("Doe")
                 .isActive(true)
-                .workloadYears(new ArrayList<>(List.of(workloadYear)))
+                .years(new ArrayList<>(List.of(workloadYear)))
                 .build();
-        workloadMonth.setWorkloadYear(workloadYear);
-        workloadYear.setTrainerWorkload(trainerWorkload);
     }
 
     @Test
@@ -70,9 +64,9 @@ public class TrainerWorkloadServiceImplTest {
         // given
         TrainerWorkloadUpdateRequestDto requestDto =
                 getTrainerWorkloadUpdateRequestDto(ActionType.ADD, LocalDate.of(2024, 11, 10));
-        WorkloadYear workloadYear = trainerWorkload.getWorkloadYears().get(0);
-        WorkloadMonth workloadMonth = workloadYear.getWorkloadMonths().get(0);
-        trainerWorkload.getWorkloadYears().get(0).getWorkloadMonths().get(0).setTrainingDuration(0);
+        Year workloadYear = trainerWorkload.getYears().get(0);
+        Month workloadMonth = workloadYear.getMonths().get(0);
+        trainerWorkload.getYears().get(0).getMonths().get(0).setTrainingDuration(0);
 
         when(trainerWorkloadRepository.findByTrainerUsername(requestDto.getTrainerUsername())).thenReturn(Optional.of(trainerWorkload));
 
@@ -100,11 +94,11 @@ public class TrainerWorkloadServiceImplTest {
         trainerWorkloadService.updateWorkload(requestDto);
 
         // then
-        int expectedWorkloadDuration = trainerWorkload.getWorkloadYears().stream()
+        int expectedWorkloadDuration = trainerWorkload.getYears().stream()
                 .filter(wy -> wy.getYear() == newWorkloadYear)
-                .flatMap(workloadYear -> workloadYear.getWorkloadMonths().stream())
+                .flatMap(workloadYear -> workloadYear.getMonths().stream())
                 .filter(wm -> wm.getMonth() == newWorkloadMonth)
-                .map(WorkloadMonth::getTrainingDuration)
+                .map(Month::getTrainingDuration)
                 .findAny()
                 .orElse(0);
 
@@ -119,9 +113,9 @@ public class TrainerWorkloadServiceImplTest {
         // given
         TrainerWorkloadUpdateRequestDto requestDto =
                 getTrainerWorkloadUpdateRequestDto(ActionType.DELETE, LocalDate.of(2024, 11, 10));
-        trainerWorkload.getWorkloadYears().get(0).getWorkloadMonths().get(0).setTrainingDuration(180);
-        WorkloadYear workloadYear = trainerWorkload.getWorkloadYears().get(0);
-        WorkloadMonth workloadMonth = workloadYear.getWorkloadMonths().get(0);
+        trainerWorkload.getYears().get(0).getMonths().get(0).setTrainingDuration(180);
+        Year workloadYear = trainerWorkload.getYears().get(0);
+        Month workloadMonth = workloadYear.getMonths().get(0);
 
         when(trainerWorkloadRepository.findByTrainerUsername(requestDto.getTrainerUsername())).thenReturn(Optional.of(trainerWorkload));
 
@@ -147,11 +141,11 @@ public class TrainerWorkloadServiceImplTest {
 
         // then
         verify(trainerWorkloadRepository, times(1)).findByTrainerUsername(requestDto.getTrainerUsername());
-        boolean isMonthRemoved = trainerWorkload.getWorkloadYears().stream()
-                .noneMatch(workloadYear -> workloadYear.getWorkloadMonths().stream()
+        boolean isMonthRemoved = trainerWorkload.getYears().stream()
+                .noneMatch(workloadYear -> workloadYear.getMonths().stream()
                         .anyMatch(workloadMonth -> workloadMonth.getMonth() == 11));
         assertTrue(isMonthRemoved);
-        assertTrue(trainerWorkload.getWorkloadYears().isEmpty());
+        assertTrue(trainerWorkload.getYears().isEmpty());
     }
 
     @Test
@@ -160,7 +154,7 @@ public class TrainerWorkloadServiceImplTest {
         String username = "username";
         int year = 2024;
         int month = 11;
-        int expectedDuration = trainerWorkload.getWorkloadYears().get(0).getWorkloadMonths().get(0).getTrainingDuration();
+        int expectedDuration = trainerWorkload.getYears().get(0).getMonths().get(0).getTrainingDuration();
 
         when(trainerWorkloadRepository.findByTrainerUsername(username)).thenReturn(Optional.of(trainerWorkload));
 
